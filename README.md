@@ -27,6 +27,42 @@ A powerful browser extension that uses AI-powered text summarization to quickly 
 
 The extension can be packaged and submitted to the Chrome Web Store or Edge Add-ons store.
 
+## CORS Proxy Setup (Required for AI Features)
+
+**Important**: Due to browser CORS restrictions, the extension cannot directly connect to Ollama. You need to run a local proxy server to enable AI-powered summarization.
+
+### Quick Setup:
+
+1. **Start the Proxy Server**:
+   ```bash
+   node ollama-proxy.js
+   ```
+   
+   The proxy will start on `http://localhost:8080` and forward requests to Ollama at `http://localhost:11434`.
+
+2. **Verify Setup**:
+   - Ensure Ollama is running: `ollama serve`
+   - Ensure the proxy is running: You should see "Ollama proxy server running on http://localhost:8080"
+   - The extension will automatically detect the proxy and enable AI features
+
+### Troubleshooting CORS Issues:
+
+- **Extension shows "AI Unavailable"**: Make sure both Ollama and the proxy server are running
+- **Connection errors**: Verify that:
+  - Ollama is running on port 11434: `curl http://localhost:11434/api/tags`
+  - Proxy is running on port 8080: `curl http://localhost:8080/api/tags`
+- **Port conflicts**: If port 8080 is in use, edit `ollama-proxy.js` and change the `PORT` variable
+
+### How the Proxy Works:
+
+The `ollama-proxy.js` file creates a simple HTTP proxy that:
+- Runs on `localhost:8080`
+- Forwards all requests to Ollama at `localhost:11434`
+- Adds proper CORS headers to allow browser extension access
+- Handles preflight OPTIONS requests
+
+This solution keeps everything local and private while bypassing browser security restrictions.
+
 ## How to Use
 
 1. **Basic Summarization**:
