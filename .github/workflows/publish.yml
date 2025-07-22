@@ -1,0 +1,56 @@
+name: CI / Publish
+
+on:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20.x
+
+jobs:
+  tests:
+    name: 🧪 Tests
+    uses: ./.github/workflows/tests.yml
+
+  publish:
+    name: 🚀 Publish
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: [tests]
+
+    steps:
+      - name: ✅ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔨 Setup
+        uses: ./.github/workflows/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Build
+        run: bun run build
+
+      - name: 🗃️ Archive Chrome artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-${{ github.sha }}
+          path: build/*-chrome.zip
+
+      - name: 🗃️ Archive Firefox artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-${{ github.sha }}
+          path: build/*-firefox.zip
+
+      - name: 💨 Publish!
+        run: |
+          bun wxt submit \
+            --chrome-zip build/*-chrome.zip \
+            --firefox-zip build/*-firefox.zip --firefox-sources-zip build/*-sources.zip
+        env:
+          CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+          CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
