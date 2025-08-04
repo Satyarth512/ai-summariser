@@ -12,41 +12,42 @@
       min-height: 580px;
       margin: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #e6e7ee;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 0;
       overflow-x: hidden;
     }
     
     .app-container {
-      background: #e6e7ee;
+      background: transparent;
       min-height: 580px;
-      padding: 24px;
+      padding: 20px;
       position: relative;
     }
     
     .header {
-      background: #e6e7ee;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 24px;
-      margin: -24px -24px 24px -24px;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
+      margin: 0 0 20px 0;
+      border-radius: 20px;
       text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .header h1 {
       margin: 0 0 8px 0;
-      font-size: 24px;
-      font-weight: 700;
-      color: #4a5568;
-      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      letter-spacing: -0.5px;
     }
     
     .header p {
       margin: 0;
       font-size: 14px;
-      color: #718096;
+      color: rgba(255, 255, 255, 0.8);
       font-weight: 500;
     }
     
@@ -63,18 +64,17 @@
     }
     
     .summarize-btn, .export-btn {
-      background: #e6e7ee;
-      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 16px;
       padding: 16px 24px;
       font-size: 14px;
       font-weight: 600;
-      color: #4a5568;
+      color: #ffffff;
       cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 
-        8px 8px 16px #d1d2d9,
-        -8px -8px 16px #fbfcff;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       position: relative;
       overflow: hidden;
     }
@@ -85,6 +85,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      background: rgba(255, 255, 255, 0.25);
     }
     
     .export-btn {
@@ -96,17 +97,14 @@
     }
     
     .summarize-btn:hover, .export-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 
-        10px 10px 20px #d1d2d9,
-        -10px -10px 20px #fbfcff;
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
     
     .summarize-btn:active, .export-btn:active {
       transform: translateY(0);
-      box-shadow: 
-        inset 4px 4px 8px #d1d2d9,
-        inset -4px -4px 8px #fbfcff;
+      background: rgba(255, 255, 255, 0.15);
     }
     
     .export-btn:disabled {
@@ -117,21 +115,20 @@
     
     .export-btn:disabled:hover {
       transform: none;
-      box-shadow: 
-        8px 8px 16px #d1d2d9,
-        -8px -8px 16px #fbfcff;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .loading {
       display: none;
-      background: #e6e7ee;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 24px;
       text-align: center;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
-      color: #4a5568;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      color: #ffffff;
       font-size: 14px;
       font-weight: 500;
     }
@@ -164,14 +161,14 @@
     }
     
     .spinner::before {
-      border: 3px solid #d1d2d9;
-      border-top-color: #4a5568;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
       animation: spin 1s linear infinite;
     }
     
     .spinner::after {
       border: 2px solid transparent;
-      border-bottom-color: #c0a0ff;
+      border-bottom-color: rgba(255, 255, 255, 0.6);
       animation: spin 1.5s linear reverse infinite;
     }
     
@@ -186,7 +183,9 @@
     }
     
     .summary {
-      background: #e6e7ee;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 24px;
       line-height: 1.6;
@@ -195,30 +194,28 @@
       overflow-y: auto;
       word-wrap: break-word;
       white-space: normal;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       position: relative;
-      color: #4a5568;
+      color: #ffffff;
     }
     
     /* Style for paragraphs within summary */
     .summary p {
       margin: 0 0 16px 0;
-      color: #4a5568;
+      color: #ffffff;
     }
     
     /* Style for lists within summary */
     .summary ul, .summary ol {
       margin: 12px 0;
       padding-left: 24px;
-      color: #4a5568;
+      color: #ffffff;
     }
     
     /* Style for list items within summary */
     .summary li {
       margin-bottom: 8px;
-      color: #4a5568;
+      color: #ffffff;
     }
     
     .summary p:last-child {
@@ -232,12 +229,12 @@
       align-items: center;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 2px solid #d1d2d9;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
       font-size: 14px;
     }
     
     .summary-method {
-      color: #718096;
+      color: rgba(255, 255, 255, 0.7);
       font-size: 12px;
       font-weight: 600;
       display: flex;
@@ -251,37 +248,36 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #4a5568;
+      background: rgba(255, 255, 255, 0.8);
     }
     
     .error {
-      background: #e6e7ee;
+      background: rgba(239, 68, 68, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       border-radius: 16px;
       padding: 20px;
       font-size: 14px;
-      color: #e53e3e;
+      color: #fecaca;
       position: relative;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
-      border: 2px solid #fed7d7;
+      box-shadow: 0 8px 32px rgba(239, 68, 68, 0.1);
     }
     
     .word-count {
       font-size: 12px;
-      color: #718096;
+      color: rgba(255, 255, 255, 0.6);
       margin-top: 12px;
       text-align: right;
       font-weight: 500;
     }
     
     .settings {
-      background: #e6e7ee;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .setting-group {
@@ -292,7 +288,7 @@
       display: block;
       font-size: 12px;
       margin-bottom: 8px;
-      color: #4a5568;
+      color: #ffffff;
       font-weight: 600;
     }
     
@@ -300,36 +296,33 @@
       width: 100%;
       padding: 12px 16px;
       border-radius: 12px;
-      border: none;
-      background: #e6e7ee;
-      color: #4a5568;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
       font-size: 14px;
       outline: none;
       transition: all 0.2s ease;
-      box-shadow: 
-        inset 4px 4px 8px #d1d2d9,
-        inset -4px -4px 8px #fbfcff;
       cursor: pointer;
     }
     
     .setting-group select:focus {
-      box-shadow: 
-        inset 6px 6px 12px #d1d2d9,
-        inset -6px -6px 12px #fbfcff;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
     }
     
     .setting-group select option {
-      background: #e6e7ee;
-      color: #4a5568;
+      background: rgba(102, 126, 234, 0.9);
+      color: #ffffff;
     }
     
     .ai-status {
-      background: #e6e7ee;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 16px;
-      box-shadow: 
-        inset 8px 8px 16px #d1d2d9,
-        inset -8px -8px 16px #fbfcff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       position: relative;
     }
     
@@ -338,7 +331,7 @@
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      color: #4a5568;
+      color: #ffffff;
       font-weight: 500;
     }
     
