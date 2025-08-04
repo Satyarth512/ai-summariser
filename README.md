@@ -27,41 +27,36 @@ A powerful browser extension that uses AI-powered text summarization to quickly 
 
 The extension can be packaged and submitted to the Chrome Web Store or Edge Add-ons store.
 
-## CORS Proxy Setup (Required for AI Features)
+## OpenAI API Setup (Required for AI Features)
 
-**Important**: Due to browser CORS restrictions, the extension cannot directly connect to Ollama. You need to run a local proxy server to enable AI-powered summarization.
+**Important**: This extension uses OpenAI's API for AI-powered summarization. You need to provide your own OpenAI API key to enable AI features.
 
 ### Quick Setup:
 
-1. **Start the Proxy Server**:
-   ```bash
-   node ollama-proxy.js
-   ```
-   
-   The proxy will start on `http://localhost:8080` and forward requests to Ollama at `http://localhost:11434`.
+1. **Get an OpenAI API Key**:
+   - Visit [OpenAI's API platform](https://platform.openai.com/api-keys)
+   - Create an account or sign in
+   - Generate a new API key (starts with `sk-`)
+   - Copy the API key securely
 
-2. **Verify Setup**:
-   - Ensure Ollama is running: `ollama serve`
-   - Ensure the proxy is running: You should see "Ollama proxy server running on http://localhost:8080"
-   - The extension will automatically detect the proxy and enable AI features
+2. **Configure the Extension**:
+   - Click the extension icon in your browser
+   - Click the "Settings" button
+   - Paste your OpenAI API key in the "OpenAI API Key" field
+   - Click "Save Settings"
+   - The extension will automatically detect the API key and enable AI features
 
-### Troubleshooting CORS Issues:
+### Security & Privacy:
 
-- **Extension shows "AI Unavailable"**: Make sure both Ollama and the proxy server are running
-- **Connection errors**: Verify that:
-  - Ollama is running on port 11434: `curl http://localhost:11434/api/tags`
-  - Proxy is running on port 8080: `curl http://localhost:8080/api/tags`
-- **Port conflicts**: If port 8080 is in use, edit `ollama-proxy.js` and change the `PORT` variable
+- Your API key is stored securely in your browser's local storage
+- The API key is never shared or transmitted to any third parties
+- All API calls go directly from your browser to OpenAI's servers
+### Troubleshooting:
 
-### How the Proxy Works:
-
-The `ollama-proxy.js` file creates a simple HTTP proxy that:
-- Runs on `localhost:8080`
-- Forwards all requests to Ollama at `localhost:11434`
-- Adds proper CORS headers to allow browser extension access
-- Handles preflight OPTIONS requests
-
-This solution keeps everything local and private while bypassing browser security restrictions.
+- **Extension shows "No API Key"**: Make sure you've entered your OpenAI API key in the settings
+- **Extension shows "Invalid API Key"**: Verify your API key starts with `sk-` and is correctly copied
+- **API rate limits**: If you see rate limit errors, wait a few minutes before trying again
+- **Network errors**: Check your internet connection and ensure OpenAI's API is accessible
 
 ## How to Use
 

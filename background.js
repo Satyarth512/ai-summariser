@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener((details) => {
       autoHighlight: false,
       saveHistory: true,
       preferAI: true,
-      ollamaModel: 'llama3.2:latest'
+      openaiApiKey: ''
     });
   }
 });
@@ -39,15 +39,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
   
-  if (request.action === 'ollamaRequest') {
-    console.log('Background script received ollamaRequest:', { model: request.model, promptLength: request.prompt.length });
-    handleOllamaRequest(request.model, request.prompt)
+  if (request.action === 'openaiRequest') {
+    console.log('Background script received openaiRequest:', { promptLength: request.prompt.length });
+    handleOpenAIRequest(request.prompt)
       .then(data => {
-        console.log('Ollama request successful, response length:', data.length);
+        console.log('OpenAI request successful, response length:', data.length);
         sendResponse({ success: true, data: data });
       })
       .catch(error => {
-        console.error('Ollama request failed:', error.message);
+        console.error('OpenAI request failed:', error.message);
         sendResponse({ success: false, error: error.message });
       });
     return true;
@@ -113,26 +113,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Handle Ollama API requests using fetch API via proxy server (bypasses CORS)
-async function handleOllamaRequest(model, prompt) {
-  const ollamaUrl = 'http://localhost:8080/api/generate';
+// Handle OpenAI API requests
+async function handleOpenAIRequest(prompt) {
+  // Get API key from storage
+  const settings = await new Promise(resolve => {
+    chrome.storage.sync.get(['openaiApiKey'], resolve);
+  });
+  
+  const apiKey = settings.openaiApiKey;
+  if (!apiKey) {
+    throw new Error('OpenAI API key not found. Please set your API key in the extension settings.');
+  }
+  
+  const openaiUrl = 'https://api.openai.com/v1/chat/completions';
   
   const requestBody = {
-    model: model,
-    prompt: prompt,
-    stream: false
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'user',
+        content: prompt
+      }
+    ],
+    max_tokens: 1000,
+    temperature: 0.7
   };
   
-  console.log('Sending Ollama request with payload:', requestBody);
+  console.log('Sending OpenAI request with payload:', { ...requestBody, messages: [{ role: 'user', content: `[${prompt.length} chars]` }] });
   
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000);
     
-    const response = await fetch(ollamaUrl, {
+    const response = await fetch(openaiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal
@@ -140,79 +157,70 @@ async function handleOllamaRequest(model, prompt) {
     
     clearTimeout(timeoutId);
     
-    console.log('Ollama fetch response status:', response.status);
-    console.log('Ollama fetch response ok:', response.ok);
+    console.log('OpenAI fetch response status:', response.status);
+    console.log('OpenAI fetch response ok:', response.ok);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Ollama API error details:', {
+      console.error('OpenAI API error details:', {
         status: response.status,
         statusText: response.statusText,
         body: errorText
       });
-      throw new Error(`Ollama API error: ${response.status} ${response.statusText} - ${errorText}`);
+      
+      if (response.status === 401) {
+        throw new Error('Invalid OpenAI API key. Please check your API key in the extension settings.');
+      } else if (response.status === 429) {
+        throw new Error('OpenAI API rate limit exceeded. Please try again later.');
+      } else {
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      }
     }
     
     const data = await response.json();
     
-    if (!data.response) {
-      throw new Error('No response from Ollama');
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('No response from OpenAI API');
     }
     
-    console.log('Ollama request successful, response length:', data.response.length);
-    return data.response.trim();
+    const responseText = data.choices[0].message.content.trim();
+    console.log('OpenAI request successful, response length:', responseText.length);
+    return responseText;
     
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error('Ollama request timed out after 60 seconds');
+      throw new Error('OpenAI request timed out after 60 seconds');
     }
-    console.error('Ollama request error:', error.message);
+    console.error('OpenAI request error:', error.message);
     throw error;
   }
 }
 
-// Check Ollama status using fetch API via proxy server
-async function checkOllamaStatus() {
-  console.log('Checking Ollama status...');
+// Check OpenAI API key status
+async function checkOpenAIStatus() {
+  console.log('Checking OpenAI API key status...');
   
   try {
-    // Simple check to see if Ollama is running
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-    
-    // Try to connect via proxy - check if proxy and Ollama are working
-    const response = await fetch('http://localhost:8080/api/tags', {
-      method: 'GET',
-      signal: controller.signal,
-      headers: {
-        'Accept': 'application/json'
-      }
+    // Get API key from storage
+    const settings = await new Promise(resolve => {
+      chrome.storage.sync.get(['openaiApiKey'], resolve);
     });
     
-    clearTimeout(timeoutId);
-    
-    // If we get here without an error, Ollama is probably running
-    console.log('Ollama status check: Connected to Ollama');
-    
-    if (response.ok) {
-      const data = await response.json();
-      return data.models || [{ name: 'llama3.2:latest' }];
-    } else {
-      console.log('Ollama responded with status:', response.status);
-      // Even with an error status, if we got a response, Ollama is running
-      return [{ name: 'llama3.2:latest' }];
+    const apiKey = settings.openaiApiKey;
+    if (!apiKey) {
+      return { available: false, error: 'No API key configured' };
     }
+    
+    if (!apiKey.startsWith('sk-')) {
+      return { available: false, error: 'Invalid API key format' };
+    }
+    
+    // API key exists and has correct format
+    return { available: true, error: null };
+    
   } catch (error) {
-    console.error('Ollama status check failed:', error.message);
-    
-    // If it's a CORS error, Ollama might still be running
-    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-      console.log('Network error, but this might be CORS - assuming Ollama is available');
-      return [{ name: 'llama3.2:latest' }];
-    }
-    
-    // If we reach this point, Ollama is likely not running
-    throw error;
+    console.error('OpenAI status check failed:', error.message);
+    return { available: false, error: error.message };
   }
 }
 

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const summarizeBtn = document.getElementById('summarizeBtn');
   const exportPdfBtn = document.getElementById('exportPdfBtn');
+  const settingsBtn = document.getElementById('settingsBtn');
   const loading = document.getElementById('loading');
   const summaryDiv = document.getElementById('summary');
   const errorDiv = document.getElementById('error');
@@ -13,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentPageTitle = '';
   let currentPageUrl = '';
   
-  // Check Ollama status on load
-  checkOllamaStatus();
+  // Check OpenAI status on load
+  checkOpenAIStatus();
   
   // Load saved settings
   chrome.storage.sync.get(['summaryLength'], function(result) {
@@ -45,6 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     
     exportSummaryAsPdf();
+  });
+  
+  // Open settings page when settings button is clicked
+  settingsBtn.addEventListener('click', function() {
+    chrome.runtime.openOptionsPage();
   });
   
   summarizeBtn.addEventListener('click', async function() {
@@ -209,35 +215,29 @@ async function generateSummary(text, length) {
   };
 }
 
-// Generate a summary of the provided text using Ollama
+// Generate a summary of the provided text using OpenAI
 async function generateAISummary(text, length) {
-  // Always use llama3.2:latest
-  const model = 'llama3.2:latest';
-  
   // Get saved settings
   const settings = await new Promise(resolve => {
-    chrome.storage.sync.get(['preferAI'], resolve);
+    chrome.storage.sync.get(['preferAI', 'openaiApiKey'], resolve);
   });
   
-  console.log('Extension settings:', settings);
+  console.log('Extension settings:', { preferAI: settings.preferAI, hasApiKey: !!settings.openaiApiKey });
   
-  let selectedModel = model;
   const preferAI = settings.preferAI !== false;
-  
-  console.log('Selected model:', selectedModel);
-  console.log('Prefer AI:', preferAI);
+  const apiKey = settings.openaiApiKey;
   
   if (!preferAI) {  
     console.log('AI summarization disabled in settings - using fallback');
     throw new Error('AI summarization disabled in settings');
   }
   
-  console.log('Attempting to use AI summarization with Ollama...');
-  
-  // Add :latest tag if not present
-  if (!selectedModel.includes(':')) {
-    selectedModel = selectedModel + ':latest';
+  if (!apiKey) {
+    console.log('No OpenAI API key found - using fallback');
+    throw new Error('OpenAI API key not configured. Please set your API key in the extension settings.');
   }
+  
+  console.log('Attempting to use AI summarization with OpenAI...');
   
   // Create comprehensive prompt with more data
   const maxLength = 8000; // Increase from 2000 to 8000 characters
@@ -336,8 +336,7 @@ ${textToSummarize}`;
   // Send request to background script
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({
-      action: 'ollamaRequest',
-      model: selectedModel,
+      action: 'openaiRequest',
       prompt: prompt
     }, (response) => {
       if (chrome.runtime.lastError) {
@@ -346,7 +345,7 @@ ${textToSummarize}`;
       }
       
       if (response.error) {
-        console.error('Ollama API error:', response.error);
+        console.error('OpenAI API error:', response.error);
         reject(new Error(response.error));
         return;
       }
@@ -452,47 +451,41 @@ function getWordFrequency(text) {
   return freq;
 }
 
-// Check if Ollama is running and update status
-async function checkOllamaStatus() {
-  console.log('Popup: Starting checkOllamaStatus...');
+// Check if OpenAI API key is configured and update status
+async function checkOpenAIStatus() {
   try {
-    // Send request to background script to check Ollama status
-    console.log('Popup: Sending checkOllamaStatus message to background script');
-    const response = await new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({
-        action: 'checkOllamaStatus'
-      }, (response) => {
-        console.log('Popup: Received response from background script:', response);
-        if (chrome.runtime.lastError) {
-          console.error('Popup: Chrome runtime error:', chrome.runtime.lastError.message);
-          reject(new Error(chrome.runtime.lastError.message));
-          return;
-        }
-        resolve(response);
-      });
-    });
-    
-    if (response.success && response.models) {
-      const models = response.models;
-      statusDot.className = 'status-dot online';
+    // Get OpenAI API key from storage
+    chrome.storage.sync.get(['openaiApiKey', 'preferAI'], (result) => {
+      const apiKey = result.openaiApiKey;
+      const preferAI = result.preferAI !== false;
       
-      if (models.length > 0) {
-        const modelNames = models.map(m => {
-          const name = m.name || m.model || 'unknown';
-          return name.split(':')[0];
-        }).slice(0, 2);
-        statusText.textContent = `AI Ready (${modelNames.join(', ')})`;
-        console.log('Available Ollama models:', models.map(m => m.name || m.model));
-      } else {
-        statusText.textContent = 'AI Ready (No models found)';
+      if (!preferAI) {
+        updateStatusIndicator(false, 'AI Disabled');
+        return;
       }
-    } else {
-      throw new Error(response.error || 'Ollama not responding');
-    }
+      
+      if (!apiKey) {
+        updateStatusIndicator(false, 'No API Key');
+        return;
+      }
+      
+      if (!apiKey.startsWith('sk-')) {
+        updateStatusIndicator(false, 'Invalid API Key');
+        return;
+      }
+      
+      updateStatusIndicator(true, 'AI Ready');
+    });
   } catch (error) {
-    statusDot.className = 'status-dot offline';
-    statusText.textContent = 'AI Offline - Using fallback';
-    console.log('Ollama status check failed:', error.message);
+    console.error('Error in checkOpenAIStatus:', error);
+    updateStatusIndicator(false, 'Error checking status');
+  }
+  
+  function updateStatusIndicator(isAvailable, statusText) {
+    if (statusDot && statusText) {
+      statusDot.className = isAvailable ? 'status-dot online' : 'status-dot offline';
+      statusText.textContent = statusText;
+    }
   }
 }
 

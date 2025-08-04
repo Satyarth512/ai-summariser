@@ -10,9 +10,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "http://localhost:11434/*",
-    "http://127.0.0.1:11434/*",
-    "http://localhost:8080/*"
+    "https://api.openai.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

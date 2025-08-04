@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const defaultLengthSelect = document.getElementById('defaultLength');
   const autoHighlightCheckbox = document.getElementById('autoHighlight');
   const saveHistoryCheckbox = document.getElementById('saveHistory');
-  // Removed model selection UI elements
+  const openaiApiKeyInput = document.getElementById('openaiApiKey');
   const preferAICheckbox = document.getElementById('preferAI');
   const saveSettingsBtn = document.getElementById('saveSettings');
   const clearHistoryBtn = document.getElementById('clearHistory');
@@ -17,14 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Save settings
   saveSettingsBtn.addEventListener('click', function() {
-    // Always use llama3.2:latest
-    const modelValue = 'llama3.2:latest';
+    const apiKey = openaiApiKeyInput.value.trim();
+    
+    // Validate API key format
+    if (apiKey && !apiKey.startsWith('sk-')) {
+      showStatusMessage('Invalid API key format. OpenAI API keys start with "sk-"', 'error');
+      return;
+    }
     
     const settings = {
       summaryLength: defaultLengthSelect.value,
       autoHighlight: autoHighlightCheckbox.checked,
       saveHistory: saveHistoryCheckbox.checked,
-      ollamaModel: modelValue,
+      openaiApiKey: apiKey,
       preferAI: preferAICheckbox.checked
     };
     
@@ -52,25 +57,14 @@ document.addEventListener('DOMContentLoaded', function() {
       summaryLength: 'medium',
       autoHighlight: false,
       saveHistory: true,
-      ollamaModel: 'llama3.2:latest',
-      preferAI: true,
-      customModelName: ''
+      openaiApiKey: '',
+      preferAI: true
     }, function(items) {
       defaultLengthSelect.value = items.summaryLength;
       autoHighlightCheckbox.checked = items.autoHighlight;
       saveHistoryCheckbox.checked = items.saveHistory;
+      openaiApiKeyInput.value = items.openaiApiKey;
       preferAICheckbox.checked = items.preferAI;
-      
-      // Handle custom model display
-      const customModel = items.customModelName;
-      if (customModel && !['llama3.2:latest'].includes(items.ollamaModel)) {
-        ollamaModelSelect.value = 'custom';
-        customModelGroup.style.display = 'block';
-        customModelInput.value = items.ollamaModel;
-      } else {
-        ollamaModelSelect.value = items.ollamaModel;
-        customModelGroup.style.display = 'none';
-      }
     });
   }
   

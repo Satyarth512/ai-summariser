@@ -155,12 +155,18 @@
   </div>
   
   <div class="settings-section">
-    <h2>AI Configuration</h2>
+    <h2>OpenAI API Configuration</h2>
+    
+    <div class="setting-group">
+      <label for="openaiApiKey">OpenAI API Key:</label>
+      <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key (sk-...)">
+      <small style="color: #666; display: block; margin-top: 5px;">Your API key is stored securely in your browser and never shared.</small>
+    </div>
     
     <div class="setting-group">
       <div class="checkbox-group">
         <input type="checkbox" id="preferAI" checked>
-        <label for="preferAI">Prefer AI summarization when available</label>
+        <label for="preferAI">Enable AI summarization</label>
       </div>
     </div>
   </div>
