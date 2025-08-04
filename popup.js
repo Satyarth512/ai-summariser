@@ -248,86 +248,127 @@ async function generateAISummary(text, length) {
   // Advanced prompt engineering with professional tone and HTML formatting
   let prompt;
   if (length === 'short') {
-    prompt = `You are an expert content analyst and professional communicator. Your task is to create a concise, insightful summary that transforms complex information into clear, actionable insights.
+    prompt = `You are an intelligent content analyst. First, identify the content type (tech/programming, business, news, tutorial, research, etc.), then create a contextually appropriate summary.
 
-CRITICAL FORMATTING RULES:
-- Use <strong>HTML strong tags</strong> around ALL key terms, important concepts, numbers, names, and critical points
-- Write in a professional, conversational tone that engages the reader
-- Focus on WHY information matters, not just WHAT it says
-- Create a narrative flow that tells a compelling story
+INTELLIGENT ADAPTATION RULES:
+- **Tech/Programming**: Focus on implementation details, technologies used, code concepts, technical benefits
+- **Business**: Emphasize metrics, market impact, strategic implications, ROI
+- **News**: Highlight key facts, timeline, who/what/when/where, impact
+- **Tutorial/How-to**: Summarize steps, requirements, tools needed, expected outcomes
+- **Research**: Focus on methodology, findings, data, conclusions
+- **General**: Provide clear, accessible main points and significance
 
-OUTPUT FORMAT:
-- Exactly 3-4 sentences that build upon each other
-- Each sentence should reveal new insight or context
-- Use <strong> tags extensively to highlight important elements
-- End with the key takeaway or implication
+FORMATTING REQUIREMENTS:
+- Use contextually appropriate headers with emojis
+- Use <strong> tags for key terms, metrics, technologies, names
+- Adapt tone to match content type (technical for tech, accessible for general)
 
-EXAMPLE OUTPUT STYLE:
-"The study reveals that <strong>artificial intelligence adoption</strong> has increased by <strong>340% in enterprise environments</strong> over the past two years. This dramatic surge is primarily driven by <strong>cost reduction needs</strong> and <strong>competitive pressure</strong> rather than innovation goals. Most significantly, companies implementing AI report <strong>average productivity gains of 25-40%</strong> within the first six months. The data suggests that <strong>early AI adoption</strong> is becoming a critical factor for maintaining market competitiveness."
+OUTPUT STRUCTURE:
+<h2>[Appropriate emoji] [Context-aware title]</h2>
+<p>[Opening with main point and <strong>key details</strong>]</p>
+<h3>[Appropriate emoji] [Context-aware subtitle]</h3>
+<p>[Core insight with <strong>important specifics</strong> and relevance]</p>
 
-Now analyze this text:
+EXAMPLES:
+For Tech: <h2>💻 Tech Overview</h2> / <h3>⚙️ Implementation</h3>
+For Business: <h2>📊 Business Impact</h2> / <h3>📈 Key Metrics</h3>
+For Tutorial: <h2>🛠️ How-To Guide</h2> / <h3>✅ What You'll Learn</h3>
+
+Now analyze this text and adapt accordingly:
 ${textToSummarize}`;
   } else if (length === 'medium') {
-    prompt = `You are a senior business analyst and expert communicator. Transform this content into a comprehensive, professional summary that executives and decision-makers would find valuable.
+    prompt = `You are an intelligent content analyst. First, identify the content type, then create a contextually appropriate medium-length summary.
 
-CRITICAL FORMATTING REQUIREMENTS:
-- Use <strong>HTML strong tags</strong> extensively around key terms, metrics, names, concepts, and insights
-- Write in an authoritative yet accessible professional tone
-- Focus on implications, significance, and actionable insights
-- Structure with proper HTML formatting
+INTELLIGENT ADAPTATION BY CONTENT TYPE:
+- **Tech/Programming**: Cover technologies, implementation approach, benefits, use cases, technical requirements
+- **Business**: Focus on market impact, financial metrics, competitive advantages, strategic implications
+- **News**: Present facts, timeline, key players, consequences, broader context
+- **Tutorial**: Outline process, prerequisites, main steps, tools, expected results
+- **Research**: Methodology, key findings, data insights, limitations, implications
+- **Product Reviews**: Features, pros/cons, performance, comparison, recommendation
 
-MANDATORY OUTPUT STRUCTURE:
-<p>[Opening paragraph that sets context and explains why this matters]</p>
+ADAPTIVE FORMATTING:
+- Use contextually relevant headers and emojis
+- Technical content: Focus on specs, implementation, performance
+- Business content: Emphasize ROI, market impact, strategic value
+- Educational content: Structure as learning points and outcomes
+
+OUTPUT STRUCTURE:
+<h2>[Context emoji] [Adaptive title]</h2>
+<p>[Context-setting opening with <strong>key points</strong>]</p>
+<h3>[Section emoji] [Adaptive section title]</h3>
 <ul>
-<li><strong>[Key insight 1]</strong>: [Explanation with <strong>important details</strong>]</li>
-<li><strong>[Key insight 2]</strong>: [Explanation with <strong>important details</strong>]</li>
-<li><strong>[Key insight 3]</strong>: [Explanation with <strong>important details</strong>]</li>
+<li><strong>[Point 1]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
+<li><strong>[Point 2]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
+<li><strong>[Point 3]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
 </ul>
-<p>[Closing paragraph with implications and key takeaways]</p>
+<h3>[Conclusion emoji] [Adaptive conclusion title]</h3>
+<p>[Context-appropriate conclusion and implications]</p>
 
 EXAMPLE OUTPUT:
+<h2>📋 Executive Summary</h2>
 <p>This analysis reveals <strong>significant market disruption</strong> in the <strong>enterprise software sector</strong>, with implications for both <strong>technology adoption strategies</strong> and <strong>competitive positioning</strong>.</p>
+<h3>🔍 Key Findings</h3>
 <ul>
 <li><strong>Market Growth Acceleration</strong>: The sector experienced <strong>67% year-over-year growth</strong>, primarily driven by <strong>remote work demands</strong> and <strong>digital transformation initiatives</strong>.</li>
 <li><strong>Competitive Landscape Shift</strong>: <strong>Three major players</strong> now control <strong>78% of market share</strong>, indicating rapid <strong>industry consolidation</strong>.</li>
 <li><strong>Investment Patterns</strong>: <strong>Venture capital funding</strong> increased by <strong>$2.3 billion</strong>, with <strong>AI-powered solutions</strong> receiving the largest allocation.</li>
 </ul>
+<h3>💡 Bottom Line</h3>
 <p>These trends suggest that <strong>early adoption</strong> and <strong>strategic partnerships</strong> will be critical for companies seeking to maintain <strong>competitive advantage</strong> in this rapidly evolving landscape.</p>
 
 Now analyze this text:
 ${textToSummarize}`;
   } else {
-    prompt = `You are a distinguished research analyst and strategic advisor. Create a comprehensive, executive-level analysis that transforms complex information into strategic insights and actionable intelligence.
+    prompt = `You are an intelligent content analyst with deep expertise across domains. First, identify the content type and domain, then create a comprehensive, contextually optimized summary.
 
-CRITICAL FORMATTING REQUIREMENTS:
-- Use <strong>HTML strong tags</strong> extensively throughout for ALL key terms, metrics, names, dates, concepts, insights, and conclusions
-- Write in an authoritative, sophisticated tone that demonstrates deep expertise
-- Focus on strategic implications, root causes, and interconnected relationships
-- Provide analysis that enables informed decision-making
+INTELLIGENT DOMAIN ADAPTATION:
+- **Tech/Programming**: Deep dive into architecture, implementation details, performance, scalability, code examples, best practices
+- **Business/Finance**: Market analysis, financial impact, competitive landscape, strategic implications, ROI, growth metrics
+- **Science/Research**: Methodology, experimental design, data analysis, statistical significance, limitations, future research
+- **News/Current Events**: Timeline, key stakeholders, political/social impact, broader implications, expert opinions
+- **Tutorial/Education**: Learning objectives, prerequisites, step-by-step breakdown, troubleshooting, practical applications
+- **Product/Technology Reviews**: Detailed specs, performance benchmarks, comparison matrix, use cases, recommendations
 
-MANDATORY OUTPUT STRUCTURE:
-<p><strong>Executive Overview:</strong> [Context and strategic significance]</p>
-<p><strong>Background Context:</strong> [Essential background with <strong>key details</strong>]</p>
+CONTEXT-AWARE FORMATTING:
+- Use domain-specific terminology and concepts
+- Adapt depth and technical level to content type
+- Include relevant metrics, data points, and specifics
+- Structure information flow logically for the domain
+
+ADAPTIVE OUTPUT STRUCTURE:
+<h2>[Domain emoji] [Context-specific title]</h2>
+<p>[Domain-appropriate opening with <strong>key insights</strong> and relevance]</p>
+<h3>[Scope emoji] [Context-specific scope title]</h3>
+<p>[Domain-appropriate scope description with <strong>main themes</strong>]</p>
+<h3>[Content emoji] [Context-specific content title]</h3>
 <ul>
-<li><strong>[Primary Finding 1]</strong>: [Detailed analysis with <strong>supporting evidence</strong> and <strong>implications</strong>]</li>
-<li><strong>[Primary Finding 2]</strong>: [Detailed analysis with <strong>supporting evidence</strong> and <strong>implications</strong>]</li>
-<li><strong>[Primary Finding 3]</strong>: [Detailed analysis with <strong>supporting evidence</strong> and <strong>implications</strong>]</li>
-<li><strong>[Primary Finding 4]</strong>: [Detailed analysis with <strong>supporting evidence</strong> and <strong>implications</strong>]</li>
+<li><strong>[Domain Point 1]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
+<li><strong>[Domain Point 2]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
+<li><strong>[Domain Point 3]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
+<li><strong>[Domain Point 4]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
 </ul>
-<p><strong>Strategic Analysis:</strong> [How findings interconnect and what they mean for stakeholders]</p>
-<p><strong>Key Takeaways:</strong> [Critical insights and recommended actions with <strong>priority levels</strong>]</p>
+<h3>[Impact emoji] [Context-specific impact title]</h3>
+<p>[Domain-appropriate significance and broader implications]</p>
+<h3>[Conclusion emoji] [Context-specific conclusion title]</h3>
+<p>[Domain-appropriate conclusions and <strong>actionable insights</strong>]</p>
 
 EXAMPLE OUTPUT:
-<p><strong>Executive Overview:</strong> This comprehensive market analysis reveals <strong>fundamental shifts</strong> in the <strong>global technology landscape</strong>, with <strong>artificial intelligence adoption</strong> reaching a <strong>critical inflection point</strong> that will reshape <strong>competitive dynamics</strong> across multiple industries.</p>
-<p><strong>Background Context:</strong> The study examined <strong>2,847 enterprises</strong> across <strong>23 countries</strong> over an <strong>18-month period</strong>, focusing on <strong>AI implementation strategies</strong> and their <strong>measurable business outcomes</strong>.</p>
+<h2>📝 Article Summary</h2>
+<p>This comprehensive analysis reveals <strong>fundamental shifts</strong> in the <strong>global technology landscape</strong>, with <strong>artificial intelligence adoption</strong> reaching a <strong>critical inflection point</strong> that will reshape how businesses operate across multiple industries.</p>
+<h3>📄 What This Covers</h3>
+<p>The article examines <strong>AI implementation trends</strong> across <strong>2,847 enterprises</strong> in <strong>23 countries</strong> over an <strong>18-month period</strong>, focusing on <strong>adoption strategies</strong> and their <strong>measurable business outcomes</strong>.</p>
+<h3>🔑 Key Points</h3>
 <ul>
-<li><strong>Adoption Acceleration</strong>: <strong>Enterprise AI adoption</strong> increased by <strong>340% year-over-year</strong>, with <strong>manufacturing</strong> and <strong>financial services</strong> leading implementation at <strong>78% and 71% respectively</strong>. This surge is driven by <strong>cost pressures</strong> and <strong>competitive necessity</strong> rather than innovation curiosity.</li>
-<li><strong>Performance Impact</strong>: Organizations with <strong>mature AI implementations</strong> report <strong>average productivity gains of 35-50%</strong> and <strong>cost reductions of 20-30%</strong>. Most significantly, <strong>customer satisfaction scores</strong> improved by <strong>23% on average</strong>.</li>
-<li><strong>Investment Patterns</strong>: <strong>Global AI investment</strong> reached <strong>$67.9 billion</strong> in the past year, with <strong>60% allocated to infrastructure</strong> and <strong>40% to talent acquisition</strong>. <strong>Return on investment</strong> typically materializes within <strong>6-12 months</strong>.</li>
-<li><strong>Competitive Implications</strong>: Companies with <strong>early AI adoption</strong> are establishing <strong>sustainable competitive advantages</strong>, with <strong>market share gains averaging 15-25%</strong> in their respective sectors.</li>
+<li><strong>Rapid Growth</strong>: <strong>Enterprise AI adoption</strong> increased by <strong>340% year-over-year</strong>, with <strong>manufacturing</strong> and <strong>financial services</strong> leading implementation at <strong>78% and 71% respectively</strong>. This surge is driven by <strong>cost pressures</strong> and <strong>competitive necessity</strong>.</li>
+<li><strong>Performance Benefits</strong>: Organizations with <strong>mature AI implementations</strong> report <strong>average productivity gains of 35-50%</strong> and <strong>cost reductions of 20-30%</strong>. Most significantly, <strong>customer satisfaction scores</strong> improved by <strong>23% on average</strong>.</li>
+<li><strong>Investment Trends</strong>: <strong>Global AI investment</strong> reached <strong>$67.9 billion</strong> in the past year, with <strong>60% allocated to infrastructure</strong> and <strong>40% to talent acquisition</strong>. <strong>Return on investment</strong> typically materializes within <strong>6-12 months</strong>.</li>
+<li><strong>Competitive Advantage</strong>: Companies with <strong>early AI adoption</strong> are establishing <strong>sustainable competitive advantages</strong>, with <strong>market share gains averaging 15-25%</strong> in their respective sectors.</li>
 </ul>
-<p><strong>Strategic Analysis:</strong> The data indicates that <strong>AI adoption</strong> has moved beyond experimental phases into <strong>mission-critical operations</strong>. Organizations that delay implementation risk <strong>permanent competitive disadvantage</strong>, while <strong>first-movers</strong> are creating <strong>defensible market positions</strong>.</p>
-<p><strong>Key Takeaways:</strong> <strong>Immediate action</strong> is required for organizations to remain competitive. Priority should be given to <strong>infrastructure development</strong>, <strong>talent acquisition</strong>, and <strong>strategic partnerships</strong> with <strong>AI technology providers</strong>. The <strong>window for competitive AI adoption</strong> is rapidly closing.</p>
+<h3>💡 Why This Matters</h3>
+<p>The data indicates that <strong>AI adoption</strong> has moved beyond experimental phases into <strong>mission-critical operations</strong>. Organizations that delay implementation risk <strong>permanent competitive disadvantage</strong>, while <strong>first-movers</strong> are creating <strong>defensible market positions</strong>.</p>
+<h3>🎯 Bottom Line</h3>
+<p><strong>Immediate action</strong> is required for organizations to remain competitive. Priority should be given to <strong>infrastructure development</strong>, <strong>talent acquisition</strong>, and <strong>strategic partnerships</strong> with <strong>AI technology providers</strong>. The <strong>window for competitive AI adoption</strong> is rapidly closing.</p>
 
 Now analyze this text:
 ${textToSummarize}`;
