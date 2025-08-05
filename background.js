@@ -128,7 +128,7 @@ async function handleOpenAIRequest(prompt) {
   const openaiUrl = 'https://api.openai.com/v1/chat/completions';
   
   const requestBody = {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4.1-mini',
     messages: [
       {
         role: 'user',
