@@ -249,11 +249,11 @@ async function generateAISummary(text, length) {
   let maxTokens;
   
   if (length === 'short') {
-    maxTokens = Math.min(Math.ceil(inputTokens / 4), 800); // 1/4 of input, max 800 tokens
-  } else if (length === 'medium') {
     maxTokens = Math.min(Math.ceil(inputTokens / 3), 1200); // 1/3 of input, max 1200 tokens
+  } else if (length === 'medium') {
+    maxTokens = Math.min(Math.ceil(inputTokens / 2), 2500); // 1/2 of input, max 2500 tokens
   } else {
-    maxTokens = Math.min(Math.ceil(inputTokens / 2), 2000); // 1/2 of input, max 2000 tokens
+    maxTokens = Math.min(Math.ceil(inputTokens / 1.5), 4000); // 2/3 of input, max 4000 tokens (~100 lines)
   }
   
   console.log(`Using ${textToSummarize.length} characters for summarization (original: ${text.length}), maxTokens: ${maxTokens}`);
