@@ -184,9 +184,9 @@ function extractPageContent() {
     .replace(/\n+/g, ' ') // Replace newlines with spaces
     .trim();
   
-  // Limit content length to avoid API limits
-  if (content.length > 8000) {
-    content = content.substring(0, 8000) + '...';
+  // Limit content length to avoid API limits (increased for better context)
+  if (content.length > 15000) {
+    content = content.substring(0, 15000) + '...';
   }
   
   return content;
@@ -239,8 +239,8 @@ async function generateAISummary(text, length) {
   
   console.log('Attempting to use AI summarization with OpenAI...');
   
-  // Create comprehensive prompt with more data
-  const maxLength = 8000; // Increase from 2000 to 8000 characters
+  // Use more context for better summaries (GPT-4.1-mini can handle more)
+  const maxLength = 20000; // Increased to 20k characters for maximum context
   const textToSummarize = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   
   console.log(`Using ${textToSummarize.length} characters for summarization (original: ${text.length})`);
