@@ -245,132 +245,36 @@ async function generateAISummary(text, length) {
   
   console.log(`Using ${textToSummarize.length} characters for summarization (original: ${text.length})`);
   
-  // Advanced prompt engineering with professional tone and HTML formatting
+  // Optimized prompt for better performance
   let prompt;
   if (length === 'short') {
-    prompt = `You are an intelligent content analyst. First, identify the content type (tech/programming, business, news, tutorial, research, etc.), then create a contextually appropriate summary.
+    prompt = `Create a concise summary of this content. Use HTML formatting with <h2> for the main title, <h3> for subtitles, and <strong> for key terms. Include relevant emojis in headers. Keep it brief but informative.
 
-INTELLIGENT ADAPTATION RULES:
-- **Tech/Programming**: Focus on implementation details, technologies used, code concepts, technical benefits
-- **Business**: Emphasize metrics, market impact, strategic implications, ROI
-- **News**: Highlight key facts, timeline, who/what/when/where, impact
-- **Tutorial/How-to**: Summarize steps, requirements, tools needed, expected outcomes
-- **Research**: Focus on methodology, findings, data, conclusions
-- **General**: Provide clear, accessible main points and significance
-
-FORMATTING REQUIREMENTS:
-- Use contextually appropriate headers with emojis
-- Use <strong> tags for key terms, metrics, technologies, names
-- Adapt tone to match content type (technical for tech, accessible for general)
-
-OUTPUT STRUCTURE:
-<h2>[Appropriate emoji] [Context-aware title]</h2>
-<p>[Opening with main point and <strong>key details</strong>]</p>
-<h3>[Appropriate emoji] [Context-aware subtitle]</h3>
-<p>[Core insight with <strong>important specifics</strong> and relevance]</p>
-
-EXAMPLES:
-For Tech: <h2>💻 Tech Overview</h2> / <h3>⚙️ Implementation</h3>
-For Business: <h2>📊 Business Impact</h2> / <h3>📈 Key Metrics</h3>
-For Tutorial: <h2>🛠️ How-To Guide</h2> / <h3>✅ What You'll Learn</h3>
-
-Now analyze this text and adapt accordingly:
+Content to summarize:
 ${textToSummarize}`;
   } else if (length === 'medium') {
-    prompt = `You are an intelligent content analyst. First, identify the content type, then create a contextually appropriate medium-length summary.
+    prompt = `Create a medium-length summary with key points. Format using HTML: <h2> for title with emoji, <h3> for sections, <ul><li> for bullet points, and <strong> for important terms. Include 3-4 main points.
 
-INTELLIGENT ADAPTATION BY CONTENT TYPE:
-- **Tech/Programming**: Cover technologies, implementation approach, benefits, use cases, technical requirements
-- **Business**: Focus on market impact, financial metrics, competitive advantages, strategic implications
-- **News**: Present facts, timeline, key players, consequences, broader context
-- **Tutorial**: Outline process, prerequisites, main steps, tools, expected results
-- **Research**: Methodology, key findings, data insights, limitations, implications
-- **Product Reviews**: Features, pros/cons, performance, comparison, recommendation
+Structure:
+- Title with relevant emoji
+- Brief overview paragraph
+- Key points section with 3-4 bullets
+- Conclusion paragraph
 
-ADAPTIVE FORMATTING:
-- Use contextually relevant headers and emojis
-- Technical content: Focus on specs, implementation, performance
-- Business content: Emphasize ROI, market impact, strategic value
-- Educational content: Structure as learning points and outcomes
-
-OUTPUT STRUCTURE:
-<h2>[Context emoji] [Adaptive title]</h2>
-<p>[Context-setting opening with <strong>key points</strong>]</p>
-<h3>[Section emoji] [Adaptive section title]</h3>
-<ul>
-<li><strong>[Point 1]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
-<li><strong>[Point 2]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
-<li><strong>[Point 3]</strong>: [Context-appropriate detail with <strong>specifics</strong>]</li>
-</ul>
-<h3>[Conclusion emoji] [Adaptive conclusion title]</h3>
-<p>[Context-appropriate conclusion and implications]</p>
-
-EXAMPLE OUTPUT:
-<h2>📋 Executive Summary</h2>
-<p>This analysis reveals <strong>significant market disruption</strong> in the <strong>enterprise software sector</strong>, with implications for both <strong>technology adoption strategies</strong> and <strong>competitive positioning</strong>.</p>
-<h3>🔍 Key Findings</h3>
-<ul>
-<li><strong>Market Growth Acceleration</strong>: The sector experienced <strong>67% year-over-year growth</strong>, primarily driven by <strong>remote work demands</strong> and <strong>digital transformation initiatives</strong>.</li>
-<li><strong>Competitive Landscape Shift</strong>: <strong>Three major players</strong> now control <strong>78% of market share</strong>, indicating rapid <strong>industry consolidation</strong>.</li>
-<li><strong>Investment Patterns</strong>: <strong>Venture capital funding</strong> increased by <strong>$2.3 billion</strong>, with <strong>AI-powered solutions</strong> receiving the largest allocation.</li>
-</ul>
-<h3>💡 Bottom Line</h3>
-<p>These trends suggest that <strong>early adoption</strong> and <strong>strategic partnerships</strong> will be critical for companies seeking to maintain <strong>competitive advantage</strong> in this rapidly evolving landscape.</p>
-
-Now analyze this text:
+Content to summarize:
 ${textToSummarize}`;
   } else {
-    prompt = `You are an intelligent content analyst with deep expertise across domains. First, identify the content type and domain, then create a comprehensive, contextually optimized summary.
+    prompt = `Create a comprehensive, detailed summary. Use HTML formatting with proper structure: <h2> for main title with emoji, <h3> for section headers, <ul><li> for lists, and <strong> for key terms.
 
-INTELLIGENT DOMAIN ADAPTATION:
-- **Tech/Programming**: Deep dive into architecture, implementation details, performance, scalability, code examples, best practices
-- **Business/Finance**: Market analysis, financial impact, competitive landscape, strategic implications, ROI, growth metrics
-- **Science/Research**: Methodology, experimental design, data analysis, statistical significance, limitations, future research
-- **News/Current Events**: Timeline, key stakeholders, political/social impact, broader implications, expert opinions
-- **Tutorial/Education**: Learning objectives, prerequisites, step-by-step breakdown, troubleshooting, practical applications
-- **Product/Technology Reviews**: Detailed specs, performance benchmarks, comparison matrix, use cases, recommendations
+Include:
+- Overview paragraph
+- Main content section with 4-5 key points
+- Significance/impact section
+- Conclusion with actionable insights
 
-CONTEXT-AWARE FORMATTING:
-- Use domain-specific terminology and concepts
-- Adapt depth and technical level to content type
-- Include relevant metrics, data points, and specifics
-- Structure information flow logically for the domain
+Adapt the content and tone based on the subject matter (technical, business, news, etc.). Be thorough but clear.
 
-ADAPTIVE OUTPUT STRUCTURE:
-<h2>[Domain emoji] [Context-specific title]</h2>
-<p>[Domain-appropriate opening with <strong>key insights</strong> and relevance]</p>
-<h3>[Scope emoji] [Context-specific scope title]</h3>
-<p>[Domain-appropriate scope description with <strong>main themes</strong>]</p>
-<h3>[Content emoji] [Context-specific content title]</h3>
-<ul>
-<li><strong>[Domain Point 1]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
-<li><strong>[Domain Point 2]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
-<li><strong>[Domain Point 3]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
-<li><strong>[Domain Point 4]</strong>: [Deep, context-appropriate analysis with <strong>specifics</strong>]</li>
-</ul>
-<h3>[Impact emoji] [Context-specific impact title]</h3>
-<p>[Domain-appropriate significance and broader implications]</p>
-<h3>[Conclusion emoji] [Context-specific conclusion title]</h3>
-<p>[Domain-appropriate conclusions and <strong>actionable insights</strong>]</p>
-
-EXAMPLE OUTPUT:
-<h2>📝 Article Summary</h2>
-<p>This comprehensive analysis reveals <strong>fundamental shifts</strong> in the <strong>global technology landscape</strong>, with <strong>artificial intelligence adoption</strong> reaching a <strong>critical inflection point</strong> that will reshape how businesses operate across multiple industries.</p>
-<h3>📄 What This Covers</h3>
-<p>The article examines <strong>AI implementation trends</strong> across <strong>2,847 enterprises</strong> in <strong>23 countries</strong> over an <strong>18-month period</strong>, focusing on <strong>adoption strategies</strong> and their <strong>measurable business outcomes</strong>.</p>
-<h3>🔑 Key Points</h3>
-<ul>
-<li><strong>Rapid Growth</strong>: <strong>Enterprise AI adoption</strong> increased by <strong>340% year-over-year</strong>, with <strong>manufacturing</strong> and <strong>financial services</strong> leading implementation at <strong>78% and 71% respectively</strong>. This surge is driven by <strong>cost pressures</strong> and <strong>competitive necessity</strong>.</li>
-<li><strong>Performance Benefits</strong>: Organizations with <strong>mature AI implementations</strong> report <strong>average productivity gains of 35-50%</strong> and <strong>cost reductions of 20-30%</strong>. Most significantly, <strong>customer satisfaction scores</strong> improved by <strong>23% on average</strong>.</li>
-<li><strong>Investment Trends</strong>: <strong>Global AI investment</strong> reached <strong>$67.9 billion</strong> in the past year, with <strong>60% allocated to infrastructure</strong> and <strong>40% to talent acquisition</strong>. <strong>Return on investment</strong> typically materializes within <strong>6-12 months</strong>.</li>
-<li><strong>Competitive Advantage</strong>: Companies with <strong>early AI adoption</strong> are establishing <strong>sustainable competitive advantages</strong>, with <strong>market share gains averaging 15-25%</strong> in their respective sectors.</li>
-</ul>
-<h3>💡 Why This Matters</h3>
-<p>The data indicates that <strong>AI adoption</strong> has moved beyond experimental phases into <strong>mission-critical operations</strong>. Organizations that delay implementation risk <strong>permanent competitive disadvantage</strong>, while <strong>first-movers</strong> are creating <strong>defensible market positions</strong>.</p>
-<h3>🎯 Bottom Line</h3>
-<p><strong>Immediate action</strong> is required for organizations to remain competitive. Priority should be given to <strong>infrastructure development</strong>, <strong>talent acquisition</strong>, and <strong>strategic partnerships</strong> with <strong>AI technology providers</strong>. The <strong>window for competitive AI adoption</strong> is rapidly closing.</p>
-
-Now analyze this text:
+Content to summarize:
 ${textToSummarize}`;
   }
   
