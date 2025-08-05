@@ -243,7 +243,20 @@ async function generateAISummary(text, length) {
   const maxLength = 20000; // Increased to 20k characters for maximum context
   const textToSummarize = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   
-  console.log(`Using ${textToSummarize.length} characters for summarization (original: ${text.length})`);
+  // Calculate dynamic output length based on input size
+  // 1/2 of input for normal summaries, 1/4 for detailed explanations
+  const inputTokens = Math.ceil(textToSummarize.length / 4); // Rough estimate: 4 chars = 1 token
+  let maxTokens;
+  
+  if (length === 'short') {
+    maxTokens = Math.min(Math.ceil(inputTokens / 4), 800); // 1/4 of input, max 800 tokens
+  } else if (length === 'medium') {
+    maxTokens = Math.min(Math.ceil(inputTokens / 3), 1200); // 1/3 of input, max 1200 tokens
+  } else {
+    maxTokens = Math.min(Math.ceil(inputTokens / 2), 2000); // 1/2 of input, max 2000 tokens
+  }
+  
+  console.log(`Using ${textToSummarize.length} characters for summarization (original: ${text.length}), maxTokens: ${maxTokens}`);
   
   // Optimized prompt for better performance
   let prompt;
@@ -282,7 +295,8 @@ ${textToSummarize}`;
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage({
       action: 'openaiRequest',
-      prompt: prompt
+      prompt: prompt,
+      maxTokens: maxTokens
     }, (response) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message));

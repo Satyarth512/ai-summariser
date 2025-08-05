@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   
   if (request.action === 'openaiRequest') {
     console.log('Background script received openaiRequest:', { promptLength: request.prompt.length });
-    handleOpenAIRequest(request.prompt)
+    handleOpenAIRequest(request.prompt, request.maxTokens)
       .then(data => {
         console.log('OpenAI request successful, response length:', data.length);
         sendResponse({ success: true, data: data });
@@ -114,7 +114,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Handle OpenAI API requests
-async function handleOpenAIRequest(prompt) {
+async function handleOpenAIRequest(prompt, maxTokens = 1000) {
   // Get API key from storage
   const settings = await new Promise(resolve => {
     chrome.storage.sync.get(['openaiApiKey'], resolve);
@@ -135,7 +135,7 @@ async function handleOpenAIRequest(prompt) {
         content: prompt
       }
     ],
-    max_tokens: 1000,
+    max_tokens: maxTokens,
     temperature: 0.7
   };
   
